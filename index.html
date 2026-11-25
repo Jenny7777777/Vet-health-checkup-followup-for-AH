@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>汪汪來 · 分院版原型展示</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EFF2EE; --card:#FFFFFF; --sunk:#F4F7F3;
+  --ink:#0F2119; --ink-2:#43574C; --ink-3:#7C9085;
+  --leaf:#0E4A33; --leaf-deep:#06301F; --leaf-2:#1C7A54; --leaf-soft:#E2EFE8;
+  --gold:#B8800A; --gold-2:#E9A81A; --gold-soft:#FBF0D5;
+  --alert:#A8322A; --alert-soft:#F8E6E2;
+  --line:#DBE3DD; --line-2:#ECF1ED; --on-dark:#FFFFFF;
+  --shadow:0 1px 2px rgba(15,33,25,.05),0 8px 24px rgba(15,33,25,.05);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#07120E; --card:#0E1F18; --sunk:#142A21;
+  --ink:#E8F0EA; --ink-2:#ADC2B6; --ink-3:#7A9186;
+  --leaf:#4FBF8B; --leaf-deep:#082018; --leaf-2:#6FD3A3; --leaf-soft:#113022;
+  --gold:#EDB03B; --gold-2:#F6C65F; --gold-soft:#2D2411;
+  --alert:#E8837A; --alert-soft:#35201C;
+  --line:#22382D; --line-2:#192B22; --on-dark:#FFFFFF;
+  --shadow:none; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#07120E; --card:#0E1F18; --sunk:#142A21;
+  --ink:#E8F0EA; --ink-2:#ADC2B6; --ink-3:#7A9186;
+  --leaf:#4FBF8B; --leaf-deep:#082018; --leaf-2:#6FD3A3; --leaf-soft:#113022;
+  --gold:#EDB03B; --gold-2:#F6C65F; --gold-soft:#2D2411;
+  --alert:#E8837A; --alert-soft:#35201C;
+  --line:#22382D; --line-2:#192B22; --on-dark:#FFFFFF;
+  --shadow:none; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Noto Sans TC",system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;font-size:15px;line-height:1.68}
+h1,h2,h3{font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.1rem;margin:0 0 .6rem}
+h3{font-size:.93rem;margin:0 0 .3rem;font-weight:500;color:var(--ink-2)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold-2);outline-offset:2px}
+.n{font-variant-numeric:tabular-nums}
+
+.demobar{background:var(--gold-2);color:#2B1F02;text-align:center;font-size:.8rem;padding:.3rem 1rem;font-weight:500}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--gold-2);z-index:30}
+header.top{background:var(--leaf-deep);color:var(--on-dark);padding:1.2rem 1.2rem 0}
+.brand{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:.95rem;flex-wrap:wrap}
+.mark{width:44px;height:44px;flex:0 0 44px}
+.wordmark .zh{font-size:1.85rem;font-weight:900;letter-spacing:.12em}
+.wordmark .tag{font-size:.78rem;color:#9DC4AE}
+.who{margin-left:auto;text-align:right;font-size:.78rem;color:#9DC4AE;line-height:1.5}
+.who button{background:none;border:1px solid #2E5C47;color:#9DC4AE;border-radius:7px;padding:.15rem .6rem;cursor:pointer;font-size:.76rem;margin-top:.2rem}
+nav.tabs{display:flex;gap:.35rem;overflow-x:auto;scrollbar-width:none;margin:1rem auto 0;max-width:1100px}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{border:0;background:none;padding:.5rem 1rem;cursor:pointer;color:#9DC4AE;
+  white-space:nowrap;font-size:.92rem;border-bottom:3px solid transparent}
+nav.tabs button[aria-selected="true"]{color:var(--on-dark);border-bottom-color:var(--gold-2);font-weight:700}
+main{padding:1.5rem 1.2rem 2.5rem;max-width:1100px;margin:0 auto}
+.view[hidden]{display:none}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.3rem 1.4rem;
+  margin-bottom:1rem;box-shadow:var(--shadow)}
+.muted{color:var(--ink-3);font-size:.84rem}
+label.f{display:block;margin:.6rem 0}
+label.f>span{display:block;font-size:.8rem;color:var(--ink-2);margin-bottom:.2rem}
+input,select,textarea{width:100%;padding:.5rem .7rem;border:1px solid var(--line);border-radius:9px;background:var(--sunk)}
+textarea{min-height:56px;resize:vertical}
+.btn{border:1px solid var(--leaf);background:var(--leaf);color:var(--on-dark);padding:.5rem 1.15rem;
+  border-radius:9px;cursor:pointer;font-weight:500}
+.btn.ghost{background:none;color:var(--leaf-2);border-color:var(--line)}
+.btn.sm{padding:.26rem .7rem;font-size:.84rem;font-weight:400}
+.btn.wide{width:100%;padding:.65rem}
+.row{display:flex;gap:.55rem;flex-wrap:wrap;align-items:center}
+.tag{display:inline-block;padding:.1rem .6rem;border-radius:999px;font-size:.75rem;border:1px solid;font-weight:500}
+.t-callable{background:var(--leaf-soft);color:var(--leaf);border-color:var(--leaf-2)}
+.t-line_only{background:var(--gold-soft);color:var(--gold);border-color:var(--gold)}
+.t-review{background:var(--alert-soft);color:var(--alert);border-color:var(--alert)}
+.t-hold,.t-completed,.t-deceased{background:var(--sunk);color:var(--ink-3);border-color:var(--line)}
+.t-done{background:var(--gold-2);color:#2B1F02;border-color:var(--gold-2)}
+.kpis{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fit,minmax(145px,1fr))}
+.kpi{background:var(--sunk);border-radius:12px;padding:.85rem 1rem}
+.kpi b{display:block;font-size:1.7rem;font-weight:900;line-height:1.2;color:var(--leaf)}
+.kpi span{font-size:.8rem;color:var(--ink-3)}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th,td{padding:.42rem .55rem;border-bottom:1px solid var(--line-2);text-align:left}
+th{color:var(--ink-3);font-weight:500;font-size:.78rem}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.sc{overflow-x:auto}
+.chips{display:flex;gap:.35rem;flex-wrap:wrap;margin:.5rem 0}
+.chip{border:1px solid var(--line);background:var(--sunk);border-radius:999px;padding:.16rem .7rem;font-size:.8rem;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--leaf);color:var(--on-dark);border-color:var(--leaf)}
+.item{display:grid;grid-template-columns:auto 1fr auto;gap:.7rem;align-items:start;width:100%;text-align:left;
+  padding:.7rem .85rem;background:var(--card);border:1px solid var(--line);border-left-width:5px;
+  border-radius:11px;margin-bottom:.45rem;cursor:pointer}
+.item:hover{border-color:var(--leaf-2)}
+.item .nm{font-weight:500}
+.item .pt{font-size:.83rem;color:var(--ink-2)}
+.item .why{font-size:.79rem;color:var(--ink-3);margin-top:.12rem}
+.overdue{color:var(--alert);font-weight:500}
+.note{border-left:4px solid var(--leaf-2);background:var(--leaf-soft);padding:.6rem .8rem;border-radius:0 9px 9px 0;font-size:.85rem}
+.warn{border-left:4px solid var(--alert);background:var(--alert-soft);padding:.6rem .8rem;border-radius:0 9px 9px 0;font-size:.85rem}
+.kv{display:grid;grid-template-columns:5.2rem 1fr;gap:.15rem .6rem;font-size:.87rem;margin:.5rem 0}
+.kv dt{color:var(--ink-3)}.kv dd{margin:0}
+.scrim{position:fixed;inset:0;background:rgba(7,18,14,.55);z-index:40}
+.scrim[hidden]{display:none}
+.drawer{position:fixed;right:0;top:0;bottom:0;width:min(450px,100%);background:var(--card);
+  border-left:1px solid var(--line);z-index:41;overflow-y:auto;
+  padding:calc(1.2rem + env(safe-area-inset-top,0px)) 1.2rem calc(2rem + env(safe-area-inset-bottom,0px))}
+.drawer[hidden]{display:none}
+.drawer .close{float:right;border:0;background:none;font-size:1.5rem;cursor:pointer;color:var(--ink-3)}
+.login{max-width:400px;margin:3rem auto;background:var(--card);border:1px solid var(--line);
+  border-radius:16px;padding:2rem 1.8rem;box-shadow:var(--shadow);text-align:center}
+.login .mark{width:64px;height:64px;margin-bottom:.6rem}
+.login h2{font-size:1.5rem;letter-spacing:.1em;font-weight:900;margin-bottom:.2rem}
+.login .f{text-align:left}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:1.2rem;background:var(--leaf-deep);
+  color:#fff;padding:.55rem 1.2rem;border-radius:999px;z-index:60;font-size:.86rem}
+.toast[hidden]{display:none}
+.empty{text-align:center;color:var(--ink-3);padding:2.2rem 1rem}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="demobar">原型展示　資料為模擬，非真實飼主　任意工號與密碼皆可登入</div>
+
+<!-- ===== 登入 ===== -->
+<div id="loginView">
+  <div class="login">
+    <svg class="mark" viewBox="0 0 48 48" aria-hidden="true">
+      <path d="M24 4.2c1.5 3.2 1.4 6.2-.4 9.3-2.2-2.9-2.3-5.9.4-9.3z" fill="#34A971"/>
+      <path d="M14.6 7.6c3.1 1.7 4.8 4.2 5.2 7.6-3.4-1.1-5.3-3.6-5.2-7.6z" fill="#34A971"/>
+      <path d="M33.4 7.6c.1 4-1.8 6.5-5.2 7.6.4-3.4 2.1-5.9 5.2-7.6z" fill="#34A971"/>
+      <rect x="9.5" y="15.5" width="29" height="28.5" rx="11.5" fill="#E9A81A"/>
+      <path d="M12 22.5 24 15.8l12 6.7M12 29.8 24 23.1l12 6.7M12 37.1 24 30.4l12 6.7" stroke="#8C5E05" stroke-width="1.3" fill="none" opacity=".45"/>
+      <circle cx="18.8" cy="30.2" r="2.3" fill="#7A5104"/><circle cx="29.2" cy="30.2" r="2.3" fill="#7A5104"/>
+      <ellipse cx="24" cy="37.2" rx="4.3" ry="3.1" fill="#7A5104"/>
+    </svg>
+    <h2>汪汪來</h2>
+    <p class="muted" style="margin-bottom:1rem">健檢回訪　請選擇身分與院別登入</p>
+    <label class="f"><span>身分</span><select id="lRole">
+      <option value="front">櫃檯</option><option value="chief">院長</option><option value="hq">總部</option>
+    </select></label>
+    <label class="f" id="lBranchWrap"><span>院別</span><select id="lBranch"></select></label>
+    <label class="f"><span>工號</span><input id="lId" placeholder="例如 A1234" value="A1234"></label>
+    <label class="f"><span>密碼</span><input id="lPw" type="password" value="demo"></label>
+    <button class="btn wide" id="btnLogin" style="margin-top:.8rem">登入</button>
+  </div>
+</div>
+
+<!-- ===== 主畫面 ===== -->
+<div id="appView" hidden>
+<header class="top">
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 48 48" aria-hidden="true">
+      <path d="M24 4.2c1.5 3.2 1.4 6.2-.4 9.3-2.2-2.9-2.3-5.9.4-9.3z" fill="#34A971"/>
+      <path d="M14.6 7.6c3.1 1.7 4.8 4.2 5.2 7.6-3.4-1.1-5.3-3.6-5.2-7.6z" fill="#34A971"/>
+      <path d="M33.4 7.6c.1 4-1.8 6.5-5.2 7.6.4-3.4 2.1-5.9 5.2-7.6z" fill="#34A971"/>
+      <rect x="9.5" y="15.5" width="29" height="28.5" rx="11.5" fill="#E9A81A"/>
+      <circle cx="18.8" cy="30.2" r="2.3" fill="#7A5104"/><circle cx="29.2" cy="30.2" r="2.3" fill="#7A5104"/>
+      <ellipse cx="24" cy="37.2" rx="4.3" ry="3.1" fill="#7A5104"/>
+    </svg>
+    <div class="wordmark">
+      <div class="zh">汪汪來</div>
+      <div class="tag">慈愛健檢回訪</div>
+    </div>
+    <div class="who" id="whoBox"></div>
+  </div>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+</header>
+<main>
+  <section class="view" id="v-list"></section>
+  <section class="view" id="v-review" hidden></section>
+  <section class="view" id="v-progress" hidden></section>
+  <section class="view" id="v-week" hidden></section>
+</main>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" hidden></aside>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+"use strict";
+const BRANCHES=["中華","九如","西門院","北屯","南總","仁德","高雄","縣府","曼哈頓","北總","彰化中山","中總","大灣","嘉義西區"];
+const SUR="陳林黃張李王吳劉蔡楊許鄭謝郭洪曾廖賴徐周".split("");
+const GIV="卿明珠燕筑豪婷宇涵安瑜淳妤翔儒".split("");
+const PET=["小黑","咪咪","豆豆","妞妞","可樂","布丁","毛毛","麻糬","阿吉","拉拉","球球","歐文","花捲","奶茶","粉圓"];
+const SP=["狗","貓"];
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.hidden=false;clearTimeout(t._t);t._t=setTimeout(()=>t.hidden=true,2500);}
+
+/* 固定亂數，讓每次展示看到同一份資料 */
+let seed=20261124;
+function rnd(){seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff;}
+function pickOf(a){return a[Math.floor(rnd()*a.length)];}
+
+const STATUS=["callable","callable","callable","callable","line_only","review","hold","completed"];
+const LABEL={callable:"可聯繫",line_only:"僅LINE",review:"待醫師確認",hold:"暫緩",completed:"已完成",deceased:"已離世"};
+function fmt(d){return d.getFullYear()+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+String(d.getDate()).padStart(2,"0");}
+
+const TODAY=new Date(2026,10,24);
+let DATA=[],FU={};
+try{FU=JSON.parse(localStorage.getItem("wwl_demo_fu")||"{}");}catch(e){FU={};}
+
+(function build(){
+  let id=1;
+  for(const b of BRANCHES){
+    const n=4+Math.floor(rnd()*7);
+    for(let i=0;i<n;i++){
+      const st=pickOf(STATUS);
+      const over=Math.floor(rnd()*95)-25;
+      const due=new Date(TODAY.getTime()-over*86400000);
+      const age=(1+rnd()*16);
+      const pets=[{name:pickOf(PET),sp:pickOf(SP),age:age}];
+      if(rnd()<0.12)pets.push({name:pickOf(PET),sp:pickOf(SP),age:1+rnd()*14});
+      const last=new Date(due.getTime()-(age>=7?182:365)*86400000);
+      DATA.push({
+        id:"D"+String(id++).padStart(4,"0"),
+        branch:b, name:pickOf(SUR)+"*"+pickOf(GIV),
+        code:"0192"+String(100000+Math.floor(rnd()*899999)),
+        pets, status:st, due, over, last,
+        line:rnd()<0.62?"是":"否",
+        vet:["胡","高","林","陳","周"][Math.floor(rnd()*5)]+"醫師",
+        plan:rnd()<0.5?"A健檢":"B健檢",
+        lastVisit:st==="hold"?new Date(TODAY.getTime()-Math.floor(rnd()*28)*86400000):null,
+        chiefOK:null
+      });
+    }
+  }
+})();
+
+let ME={role:"front",branch:"中華",id:"A1234"};
+const ROLE_NAME={front:"櫃檯",chief:"院長",hq:"總部"};
+let FILTER=new Set(["callable","line_only","review"]);
+
+/* ---------- 登入 ---------- */
+const lb=document.getElementById("lBranch");
+lb.innerHTML=BRANCHES.map(b=>"<option>"+esc(b)+"</option>").join("");
+document.getElementById("lRole").onchange=e=>{
+  document.getElementById("lBranchWrap").style.display = e.target.value==="hq"?"none":"block";
+  document.getElementById("lId").value = e.target.value==="hq"?"RG88":"A1234";
+};
+document.getElementById("btnLogin").onclick=()=>{
+  ME={role:document.getElementById("lRole").value,branch:lb.value,id:document.getElementById("lId").value||"A1234"};
+  document.getElementById("loginView").hidden=true;
+  document.getElementById("appView").hidden=false;
+  buildTabs(); render();
+};
+
+function logout(){
+  document.getElementById("appView").hidden=true;
+  document.getElementById("loginView").hidden=false;
+  window.scrollTo(0,0);
+}
+
+/* ---------- 版面 ---------- */
+let VIEW="list";
+function tabsFor(){
+  if(ME.role==="front")return [["list","本院名單"],["progress","本院進度"]];
+  if(ME.role==="chief")return [["list","本院名單"],["review","待我確認"],["progress","本院進度"]];
+  return [["list","全院名單"],["progress","各院進度"],["week","週報"]];
+}
+function buildTabs(){
+  const t=tabsFor(); VIEW=t[0][0];
+  document.getElementById("tabs").innerHTML=t.map(([k,l],i)=>
+    '<button role="tab" data-v="'+k+'" aria-selected="'+(i===0)+'">'+esc(l)+"</button>").join("");
+  document.getElementById("tabs").onclick=e=>{
+    const b=e.target.closest("button"); if(!b)return;
+    VIEW=b.dataset.v;
+    document.querySelectorAll("#tabs button").forEach(x=>x.setAttribute("aria-selected",String(x===b)));
+    render();
+  };
+  document.getElementById("whoBox").innerHTML=
+    esc(ME.id)+"　"+esc(ROLE_NAME[ME.role])+(ME.role==="hq"?"":"　"+esc(ME.branch))+
+    '<br><button id="btnReset">重設展示資料</button> <button id="btnOut">登出</button>';
+  document.getElementById("btnOut").onclick=logout;
+  document.getElementById("btnReset").onclick=()=>{
+    if(!confirm("清除展示過程中填入的回填紀錄，回到初始狀態？"))return;
+    FU={};DATA.forEach(d=>d.chiefOK=null);
+    try{localStorage.removeItem("wwl_demo_fu");}catch(e){}
+    render();toast("已重設");
+  };
+}
+function scope(){ return ME.role==="hq"?DATA:DATA.filter(d=>d.branch===ME.branch); }
+
+function render(){
+  ["list","review","progress","week"].forEach(v=>{
+    const el=document.getElementById("v-"+v); if(el)el.hidden=(v!==VIEW);
+  });
+  if(VIEW==="list")renderList();
+  if(VIEW==="review")renderReview();
+  if(VIEW==="progress")renderProgress();
+  if(VIEW==="week")renderWeek();
+  window.scrollTo(0,0);
+}
+
+function renderList(){
+  const rows=scope().filter(d=>FILTER.has(d.status))
+    .sort((a,b)=>b.over-a.over);
+  const done=rows.filter(d=>FU[d.id]).length;
+  document.getElementById("v-list").innerHTML=
+    '<div class="card"><h2>'+(ME.role==="hq"?"全院名單":esc(ME.branch)+" 回訪名單")+"</h2>"+
+    '<p class="muted">本月待處理 '+rows.length+" 位，已回填 "+done+" 位。點任一列可查看個案資料並回填。</p>"+
+    '<div class="chips" id="chips">'+Object.keys(LABEL).filter(k=>k!=="deceased").map(k=>
+      '<button class="chip" data-s="'+k+'" aria-pressed="'+FILTER.has(k)+'">'+esc(LABEL[k])+"</button>").join("")+"</div></div>"+
+    (rows.length? rows.map(card).join("") : '<p class="empty">目前沒有符合條件的飼主。</p>');
+  document.getElementById("chips").onclick=e=>{
+    const b=e.target.closest(".chip"); if(!b)return;
+    FILTER.has(b.dataset.s)?FILTER.delete(b.dataset.s):FILTER.add(b.dataset.s); renderList();
+  };
+  document.querySelectorAll("#v-list .item").forEach(b=>b.onclick=()=>openCase(b.dataset.id));
+}
+function barColor(s){return s==="callable"?"var(--leaf-2)":s==="line_only"?"var(--gold-2)":s==="review"?"var(--alert)":"var(--line)";}
+function why(d){
+  if(d.status==="review")return d.chiefOK==="yes"?"院長已確認可聯繫":d.chiefOK==="no"?"院長裁示本輪不聯繫":"近 90 天有住院或輸液紀錄，請院長或主治醫師先確認";
+  if(d.status==="hold")return "最近一次到院 "+fmt(d.lastVisit)+"，本月暫緩";
+  if(d.status==="line_only")return "高齡且長期未回院，僅以 LINE 聯繫，不主動致電";
+  if(d.status==="completed")return "已自行回院完成完整血檢，下次到期 "+fmt(new Date(d.due.getTime()+182*86400000));
+  return d.over>0? "已逾期 "+d.over+" 天（到期 "+fmt(d.due)+"）" : "到期日 "+fmt(d.due)+"，可開始聯繫";
+}
+function card(d){
+  return '<button class="item" data-id="'+d.id+'" style="border-left-color:'+barColor(d.status)+'">'+
+    '<div><span class="tag t-'+d.status+'">'+esc(LABEL[d.status])+"</span>"+(FU[d.id]?' <span class="tag t-done">已回填</span>':"")+"</div>"+
+    '<div><div class="nm">'+esc(d.name)+' <span class="muted">'+esc(d.code)+(ME.role==="hq"?"　"+esc(d.branch):"")+"</span></div>"+
+    '<div class="pt">'+esc(d.pets.map(p=>p.name+"（"+p.sp+"・"+p.age.toFixed(1)+"歲）").join("、"))+"</div>"+
+    '<div class="why">'+esc(why(d))+"</div></div>"+
+    '<div class="muted" style="text-align:right">'+fmt(d.due).slice(0,7).replace("/","-")+"<br>"+
+    (d.over>0?'<span class="overdue">逾期'+d.over+"天</span>":"")+"</div></button>";
+}
+
+function openCase(id){
+  const d=DATA.find(x=>x.id===id); if(!d)return;
+  const f=FU[id]||{};
+  const canCall=!(d.status==="review"&&d.chiefOK!=="yes");
+  document.getElementById("drawer").innerHTML=
+    '<button class="close">×</button><h2>'+esc(d.name)+"</h2>"+
+    '<div class="muted">客代 '+esc(d.code)+" · "+esc(d.branch)+"</div>"+
+    '<div class="'+(d.status==="review"||d.status==="line_only"?"warn":"note")+'" style="margin:.8rem 0">'+
+      "<strong>為什麼列在這份名單</strong><br>"+esc(why(d))+"</div>"+
+    d.pets.map(p=>'<dl class="kv"><dt>寵物</dt><dd>'+esc(p.name)+"（"+esc(p.sp)+"・"+p.age.toFixed(1)+"歲）</dd>"+
+      "<dt>上次健檢</dt><dd>"+fmt(d.last)+"　"+esc(d.plan)+"</dd><dt>主治醫師</dt><dd>"+esc(d.vet)+"</dd>"+
+      "<dt>下次到期</dt><dd>"+fmt(d.due)+(d.over>0?'　<span class="overdue">逾期 '+d.over+" 天</span>":"")+"</dd></dl>").join("")+
+    '<dl class="kv"><dt>LINE</dt><dd>'+(d.line==="是"?"已綁定，可推播優惠券":"未綁定，需致電")+"</dd>"+
+    "<dt>電話</dt><dd>請於 NX 以客代查詢</dd></dl>"+
+    (canCall?
+      "<h3 style='margin-top:1.1rem'>聯絡結果回填</h3>"+
+      '<label class="f"><span>是否聯絡</span><select id="r1">'+opt(["","已聯絡","未聯絡"],f.contacted)+"</select></label>"+
+      '<label class="f"><span>通話結果</span><select id="r2">'+opt(["","已接通","未接聽","號碼有誤","改以 LINE 聯繫"],f.result)+"</select></label>"+
+      '<label class="f"><span>客戶反應／後續動作</span><select id="r3">'+opt(["","已預約","考慮中，再聯繫","已於他院檢查","婉拒","寵物已離世","其他"],f.reaction)+"</select></label>"+
+      '<label class="f"><span>預約日期</span><input type="date" id="r4" value="'+esc(f.booked||"")+'"></label>'+
+      '<label class="f"><span>備註</span><textarea id="r5" placeholder="請勿填寫電話或不必要個資">'+esc(f.note||"")+"</textarea></label>"+
+      '<p class="muted">回填人員 '+esc(ME.id)+"，時間由系統產生。</p>"+
+      '<div class="row"><button class="btn" id="rSave">儲存回填</button></div>'
+      : '<div class="warn">此個案尚未經院長確認，暫時無法回填。</div>')+
+    (ME.role==="chief"&&d.status==="review"?
+      '<h3 style="margin-top:1.1rem">院長裁示</h3><div class="row">'+
+      '<button class="btn sm" id="okYes">可以聯繫</button>'+
+      '<button class="btn ghost sm" id="okNo">本輪不聯繫</button></div>':"");
+  document.getElementById("drawer").hidden=false;
+  document.getElementById("scrim").hidden=false;
+  const dr=document.getElementById("drawer");
+  dr.querySelector(".close").onclick=closeCase;
+  const sv=dr.querySelector("#rSave");
+  if(sv)sv.onclick=()=>{
+    FU[id]={contacted:v("r1"),result:v("r2"),reaction:v("r3"),booked:v("r4"),note:v("r5"),by:ME.id,at:fmt(TODAY)};
+    if(!FU[id].contacted&&!FU[id].note)delete FU[id];
+    try{localStorage.setItem("wwl_demo_fu",JSON.stringify(FU));}catch(e){}
+    closeCase(); render(); toast("已儲存");
+  };
+  const y=dr.querySelector("#okYes"),no=dr.querySelector("#okNo");
+  if(y)y.onclick=()=>{d.chiefOK="yes";closeCase();render();toast("已確認可聯繫");};
+  if(no)no.onclick=()=>{d.chiefOK="no";closeCase();render();toast("已記錄，本輪不聯繫");};
+}
+function opt(l,s){return l.map(x=>"<option"+(x===s?" selected":"")+">"+esc(x)+"</option>").join("");}
+function v(id){const e=document.getElementById(id);return e?e.value:"";}
+function closeCase(){document.getElementById("drawer").hidden=true;document.getElementById("scrim").hidden=true;}
+document.getElementById("scrim").onclick=closeCase;
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCase();});
+
+function renderReview(){
+  const rows=scope().filter(d=>d.status==="review");
+  document.getElementById("v-review").innerHTML=
+    '<div class="card"><h2>待我確認</h2><p class="muted">這些個案近 90 天有住院、輸液等治療紀錄，系統不會讓櫃檯直接撥打，需要您先看一眼。</p></div>'+
+    (rows.length? rows.map(card).join("") : '<p class="empty">目前沒有待確認個案。</p>');
+  document.querySelectorAll("#v-review .item").forEach(b=>b.onclick=()=>openCase(b.dataset.id));
+}
+
+function renderProgress(){
+  const rows=scope().filter(d=>["callable","line_only","review"].includes(d.status));
+  const bs=[...new Set(rows.map(d=>d.branch))].sort((a,b)=>a.localeCompare(b,"zh-Hant"));
+  let t="<tr><th>門市</th><th class=n>待處理</th><th class=n>已回填</th><th class=n>完成率</th><th class=n>已預約</th></tr>";
+  for(const b of bs){
+    const r=rows.filter(d=>d.branch===b),dn=r.filter(d=>FU[d.id]).length,
+          bk=r.filter(d=>FU[d.id]&&FU[d.id].reaction==="已預約").length;
+    t+="<tr><td>"+esc(b)+"</td><td class=n>"+r.length+"</td><td class=n>"+dn+"</td><td class=n>"+
+       (r.length?Math.round(dn/r.length*100):0)+"%</td><td class=n>"+bk+"</td></tr>";
+  }
+  const dn=rows.filter(d=>FU[d.id]).length,bk=rows.filter(d=>FU[d.id]&&FU[d.id].reaction==="已預約").length;
+  t+="<tr><td><b>合計</b></td><td class=n><b>"+rows.length+"</b></td><td class=n><b>"+dn+
+     "</b></td><td class=n><b>"+(rows.length?Math.round(dn/rows.length*100):0)+"%</b></td><td class=n><b>"+bk+"</b></td></tr>";
+  document.getElementById("v-progress").innerHTML=
+    '<div class="card"><div class="kpis">'+
+      '<div class="kpi"><b>'+rows.length+"</b><span>本月待處理</span></div>"+
+      '<div class="kpi"><b>'+dn+"</b><span>已回填</span></div>"+
+      '<div class="kpi"><b>'+(rows.length?Math.round(dn/rows.length*100):0)+"%</b><span>完成率</span></div>"+
+      '<div class="kpi"><b>'+bk+"</b><span>已預約</span></div>"+
+    "</div></div>"+
+    '<div class="card"><h2>'+(ME.role==="hq"?"各院進度":"本院進度")+'</h2><div class="sc"><table>'+t+"</table></div></div>";
+}
+
+function renderWeek(){
+  const rows=DATA.filter(d=>["callable","line_only","review"].includes(d.status));
+  const kinds=["已預約","考慮中，再聯繫","已於他院檢查","婉拒","寵物已離世","其他"];
+  const filled=Object.values(FU).filter(f=>f.reaction);
+  const bs=[...new Set(rows.map(d=>d.branch))];
+  const rank=bs.map(b=>{const r=rows.filter(d=>d.branch===b),dn=r.filter(d=>FU[d.id]).length;
+    return {b,r:r.length,dn,p:r.length?dn/r.length:0};}).sort((x,y)=>y.p-x.p);
+  document.getElementById("v-week").innerHTML=
+    '<div class="card"><h2>本週回訪週報</h2><p class="muted">模擬資料。實際版本會依週次自動產生，並寄送給院長與總部。</p>'+
+    '<div class="kpis" style="margin-top:.8rem">'+
+      '<div class="kpi"><b>'+rows.length+"</b><span>本週名單</span></div>"+
+      '<div class="kpi"><b>'+rows.filter(d=>FU[d.id]).length+"</b><span>已聯繫</span></div>"+
+      '<div class="kpi"><b>'+filled.filter(f=>f.reaction==="已預約").length+"</b><span>成功預約</span></div>"+
+      '<div class="kpi"><b>'+rows.filter(d=>d.status==="review").length+"</b><span>待院長確認</span></div>"+
+    "</div></div>"+
+    '<div class="card"><h2>完成率排名</h2><div class="sc"><table><tr><th>名次</th><th>門市</th><th class=n>待處理</th><th class=n>已回填</th><th class=n>完成率</th></tr>'+
+      rank.map((x,i)=>"<tr><td>"+(i+1)+"</td><td>"+esc(x.b)+"</td><td class=n>"+x.r+"</td><td class=n>"+x.dn+
+        "</td><td class=n>"+Math.round(x.p*100)+"%</td></tr>").join("")+"</table></div></div>"+
+    '<div class="card"><h2>聯絡結果分布</h2><div class="sc"><table><tr><th>客戶反應</th><th class=n>件數</th></tr>'+
+      (filled.length? kinds.map(k=>{const n=filled.filter(f=>f.reaction===k).length;
+        return n?"<tr><td>"+esc(k)+"</td><td class=n>"+n+"</td></tr>":"";}).join("")
+        :"<tr><td class='muted'>尚無回填紀錄，請先在名單頁回填幾筆。</td></tr>")+"</table></div></div>";
+}
+</script>
+</body>
+</html>
